@@ -10,10 +10,12 @@ struct Question{
 };
 
 
-
 struct TestModel
 {
-    QString testName;
+    QString name;
+    QString minTestScore;
+
+    QString description;
     QVector<Question> questions;
 };
 
