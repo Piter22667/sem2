@@ -21,9 +21,10 @@ public:
     QString getFirstButtonTitle() override;
     QString getSecondButtonTitle() override;
     void getDataSource();
+    TestModel* getTest(int id);
 
 
-    TestsTableViewModel *getTestsTableModel();
+    TestsTableViewModel* getTestsTableModel();
 
 private slots:
     void onDataReceived();
