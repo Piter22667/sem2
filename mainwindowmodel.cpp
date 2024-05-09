@@ -1,6 +1,6 @@
 #include "mainwindowmodel.h"
 
-TestsTableViewModel *MainWindowModel::getTestsTableModel()
+TestsTableViewModel* MainWindowModel::getTestsTableModel()
 {
     return testsTableModel;
 }
@@ -8,7 +8,7 @@ TestsTableViewModel *MainWindowModel::getTestsTableModel()
 MainWindowModel::MainWindowModel(QObject *parent)
     : WindowModelInterface{parent}
 {
-    testsTableModel = new TestsTableViewModel(tests, parent);
+    testsTableModel = new TestsTableViewModel(this);
 
 }
 
@@ -24,6 +24,7 @@ QString MainWindowModel::getSecondButtonTitle()
 
 void MainWindowModel::onDataReceived()
 {
+    testsTableModel->testsDataUpdated(tests);
     DataUpdatedIvent event;
     event.type = DataUpdatedIvent::EventType::testListReceived;
     emit dataUpdatedWith(event);
@@ -31,16 +32,45 @@ void MainWindowModel::onDataReceived()
 
 void MainWindowModel::getDataSource()
 {
+
     TestModel* test = new TestModel;
+    test->minTestScore = "60";
     test->name = "First test";
     Question question;
-    question.questionText = "New question 1:";
+    question.questionText = " Question 1:";
     question.answers.push_back("Answer 1");
     question.answers.push_back("Answer 2");
     question.answers.push_back("Answer 3");
     question.correctAnswer = 2;
     test->questions.push_back(question);
+
+    Question question1;
+    question1.questionText = "New question 1:";
+    question1.answers.push_back(" New Answer 1");
+    question1.answers.push_back("New Answer 2");
+    question1.answers.push_back("Updated Answer 3");
+    question1.correctAnswer = 2;
+    test->questions.push_back(question1);
     tests.push_back(test);
 
+    TestModel* secondTest = new TestModel;
+    secondTest->minTestScore = "60";
+    secondTest->name = "Second test";
+    Question question3;
+    question3.questionText = "2 Question :";
+    question3.answers.push_back("2 Answer ");
+    question3.answers.push_back("2 Answer ");
+    question3.answers.push_back("2 Answer ");
+    question.correctAnswer = 2;
+    secondTest->questions.push_back(question3);
+
+    tests.push_back(secondTest);
     onDataReceived();
 }
+
+TestModel* MainWindowModel::getTest(int id)
+{
+    return tests.at(id);
+}
+
+
