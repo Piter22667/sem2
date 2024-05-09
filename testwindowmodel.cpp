@@ -2,11 +2,11 @@
 #include <QDebug>
 
 
-TestWindowModel::TestWindowModel(QObject *parent)
+TestWindowModel::TestWindowModel(TestModel* test, QObject *parent)
     : WindowModelInterface{parent},
     currentQuestion{0}
 {
-
+    this->test = test;
 }
 
 QString TestWindowModel::getQuestion()
@@ -28,31 +28,31 @@ QStringList TestWindowModel::getAnswers()
     return test->questions.at(currentQuestion).answers;
 }
 
-void TestWindowModel::updateDataSource()
-{
-    test = new TestModel;
-    test->testName = "First test";
-    Question question;
-    question.questionText = "New question 1:";
-    question.answers.push_back("Answer 1");
-    question.answers.push_back("Answer 2");
-    question.answers.push_back("Answer 3");
-    question.correctAnswer = 2;
-    test->questions.push_back(question);
+// void TestWindowModel::updateDataSource()
+// {
+//     test = new TestModel;
+//     test->name = "First test";
+//     Question question;
+//     question.questionText = "New question 1:";
+//     question.answers.push_back("Answer 1");
+//     question.answers.push_back("Answer 2");
+//     question.answers.push_back("Answer 3");
+//     question.correctAnswer = 2;
+//     test->questions.push_back(question);
 
-    Question question2;
-    question2.questionText = "New question 2:";
-    question2.answers.push_back("new Answer 1");
-    question2.answers.push_back("new Answer 2");
-    question2.answers.push_back("new Answer 3");
-    question2.correctAnswer = 2;
-    test->questions.push_back(question2);
+//     Question question2;
+//     question2.questionText = "New question 2:";
+//     question2.answers.push_back("new Answer 1");
+//     question2.answers.push_back("new Answer 2");
+//     question2.answers.push_back("new Answer 3");
+//     question2.correctAnswer = 2;
+//     test->questions.push_back(question2);
 
-    \
-    for(int i = 0; i< test->questions.size(); i++){
-     chosenAnswers.push_back(-1);
-    }
-}
+//     \
+//     for(int i = 0; i< test->questions.size(); i++){
+//      chosenAnswers.push_back(-1);
+//     }
+// }
 
 void TestWindowModel::nextButtonClicked(int id)
 {
