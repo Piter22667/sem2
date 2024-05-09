@@ -1,12 +1,19 @@
 #include "testwindow.h"
 
-TestWindow::TestWindow(QWidget *parent)
-    : QDialog{parent},
-    model{new TestWindowModel(parent)}
+TestWindow::TestWindow( QWidget *parent)
+    : QDialog{parent}
 
 {
-    model->updateDataSource();
+    // model->updateDataSource();
+}
+
+void TestWindow::setModel(TestWindowModel *model)
+{
+
+    this->model = model;
     configure();
+    connect(model,&TestWindowModel::dataUpdatedWith, this, onDataUpdated);
+    topWidget->updateUi();
 
 }
 
@@ -38,7 +45,7 @@ void TestWindow::onPreviousButtonClicked()
 
 void TestWindow::onNextButtonClicked()
 {
-    int id = 1;
+    int id = 1;//Номер вибраної відповіді!!
     model->nextButtonClicked(id);
 
 }
@@ -73,7 +80,6 @@ void TestWindow::configureWidgets()
 
 void TestWindow::connectWidgets()
 {
-    connect(model,&TestWindowModel::dataUpdatedWith, this, onDataUpdated);
     connect(buttonsWidget, &TwoButtonsWidget::firstButtonClicked, this, &TestWindow::onPreviousButtonClicked);
     connect(buttonsWidget, &TwoButtonsWidget::secondButtonClicked, this, &TestWindow::onNextButtonClicked);
 }
