@@ -1,5 +1,5 @@
 #include "topmainwindowwidget.h"
-
+#include <QHeaderView>
 
 TopMainWindowWidget::TopMainWindowWidget(MainWindowModel &model, QWidget *parent)
     : model(model)
@@ -13,6 +13,7 @@ void TopMainWindowWidget::configureLayaut() {
 
 void TopMainWindowWidget::addWidgets() {
     tableView = new QTableView;
+    tableView->verticalHeader()->setVisible(false);
     textBrowser = new QTextBrowser;
     mainLayout->addWidget(tableView);
     mainLayout->addWidget(textBrowser);
