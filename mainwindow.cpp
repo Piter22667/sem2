@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
     model{new MainWindowModel}
 {
     configure();//template method
+    model->getDataSource();
 }
 
 MainWindow::~MainWindow() {}
@@ -15,7 +16,9 @@ MainWindow::~MainWindow() {}
 void MainWindow::onTrainButtonClicked()
 {
     qDebug()<< "Test";
-    auto window = dynamic_cast <QDialog*> (WindowsFactory::createWindow(WindowsFactory::WindowType::TrainTest));
+    auto window = dynamic_cast <TestWindow*> (WindowsFactory::createWindow(WindowsFactory::WindowType::TrainTest));
+    auto *testWindowModel = new TestWindowModel(model->getTest(0));
+    window->setModel(testWindowModel);
     window->exec();
 }
 
@@ -35,7 +38,7 @@ void MainWindow::addWidgets()
 //    mainTableView = new QTableView;
 //    trainTestButton = new QPushButton("Train test");
 //    passTestButton = new QPushButton("Pass test");
-    topwidget = new TopMainWindowWidget;
+    topwidget = new TopMainWindowWidget(*model);
     bottomWidget = new TwoButtonsWidget(*model);
     mainLayout->addWidget(topwidget);
     mainLayout->addWidget(bottomWidget);
@@ -57,6 +60,7 @@ void MainWindow::connectWidgets()
 
     connect(bottomWidget, &TwoButtonsWidget::firstButtonClicked, this,&MainWindow::onTrainButtonClicked);
     connect(bottomWidget, &TwoButtonsWidget::secondButtonClicked, this,&MainWindow::onPassButtonClicked );
+    connect(model, &MainWindowModel::dataUpdatedWith, this, &MainWindow::updateUi);
 }
 
 void MainWindow::onMainTableViewDoubleClicked(const QModelIndex &index)
