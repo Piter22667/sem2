@@ -13,6 +13,7 @@ struct Question{
 struct TestModel
 {
     QString name;
+    int id;
     QString minTestScore;
 
     QString description;
