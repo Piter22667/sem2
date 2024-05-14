@@ -17,7 +17,7 @@ void MainWindow::onTrainButtonClicked()
 {
     qDebug()<< "Test";
     auto window = dynamic_cast <TestWindow*> (WindowsFactory::createWindow(WindowsFactory::WindowType::TrainTest));
-    auto *testWindowModel = new TestWindowModel(model->getTest(0));
+    auto *testWindowModel = new TestWindowModel(model->getTest());
     window->setModel(testWindowModel);
     window->exec();
 }
@@ -57,6 +57,9 @@ void MainWindow::configureWidgets()
 void MainWindow::connectWidgets()
 {
     connect(topwidget, &TopMainWindowWidget::tableViewDoubleClicked, this, &MainWindow::onMainTableViewDoubleClicked);
+    connect(topwidget, &TopMainWindowWidget::tableViewClicked, this, &MainWindow::onMainTableViewClicked);
+
+
 
     connect(bottomWidget, &TwoButtonsWidget::firstButtonClicked, this,&MainWindow::onTrainButtonClicked);
     connect(bottomWidget, &TwoButtonsWidget::secondButtonClicked, this,&MainWindow::onPassButtonClicked );
@@ -66,6 +69,11 @@ void MainWindow::connectWidgets()
 void MainWindow::onMainTableViewDoubleClicked(const QModelIndex &index)
 {
     qDebug() << "Clicked on " << index.row();
+}
+
+void MainWindow::onMainTableViewClicked(const QModelIndex &index)
+{
+    model->setSelectedTestNumber(index.row());
 }
 
 void MainWindow::updateUi()
