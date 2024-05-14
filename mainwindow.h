@@ -42,7 +42,7 @@ private:
 
 private slots:
     void onMainTableViewDoubleClicked(const QModelIndex &index);
-
+    void onMainTableViewClicked(const QModelIndex &index);
 
 
     // ConfigurableWidget interface
