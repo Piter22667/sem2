@@ -21,16 +21,20 @@ public:
     QString getFirstButtonTitle() override;
     QString getSecondButtonTitle() override;
     void getDataSource();
-    TestModel* getTest(int id);
+
+    TestModel* getTest();
 
 
     TestsTableViewModel* getTestsTableModel();
+
+    int getSelectedTestNumber() const;
+    void setSelectedTestNumber(int newSelectedTestNumber);
 
 private slots:
     void onDataReceived();
 
 private:
-
+    int selectedTestNumber = 0;
 
 };
 
