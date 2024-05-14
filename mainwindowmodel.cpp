@@ -30,6 +30,16 @@ void MainWindowModel::onDataReceived()
     emit dataUpdatedWith(event);
 }
 
+int MainWindowModel::getSelectedTestNumber() const
+{
+    return selectedTestNumber;
+}
+
+void MainWindowModel::setSelectedTestNumber(int newSelectedTestNumber)
+{
+    selectedTestNumber = newSelectedTestNumber;
+}
+
 void MainWindowModel::getDataSource()
 {
 
@@ -68,9 +78,9 @@ void MainWindowModel::getDataSource()
     onDataReceived();
 }
 
-TestModel* MainWindowModel::getTest(int id)
+TestModel* MainWindowModel::getTest()
 {
-    return tests.at(id);
+    return tests.at(selectedTestNumber);
 }
 
 
