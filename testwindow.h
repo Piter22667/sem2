@@ -24,10 +24,12 @@ class TestWindow : public QDialog, public ConfigurableWidget
 public:
     explicit TestWindow(QWidget *parent = nullptr);
     ~TestWindow(){}
+    void setModel(TestWindowModel* model);
 signals:
 
 
     // ConfigurableWidget interface
+
 
 
 private slots:
