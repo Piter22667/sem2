@@ -7,6 +7,7 @@ TestWindowModel::TestWindowModel(TestModel* test, QObject *parent)
     currentQuestion{0}
 {
     this->test = test;
+    chosenAnswers.resize(test->questions.size());
 }
 
 QString TestWindowModel::getQuestion()
