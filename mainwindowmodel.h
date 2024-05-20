@@ -4,6 +4,8 @@
 #include "windowmodelinterface.h"
 #include "twobuttonsmodelinterface.h"
 #include "teststableviewmodel.h"
+
+#include <QNetworkReply>
 class MainWindowModel : public WindowModelInterface, public TwoButtonsModelInterface
 {
     Q_OBJECT
@@ -22,6 +24,7 @@ public:
     QString getSecondButtonTitle() override;
     void getDataSource();
 
+
     TestModel* getTest();
 
 
@@ -31,11 +34,12 @@ public:
     void setSelectedTestNumber(int newSelectedTestNumber);
 
 private slots:
-    void onDataReceived();
+    void onDataReceived(const QJsonDocument &reply);
+
 
 private:
     int selectedTestNumber = 0;
-
+    void parseTests(const QJsonDocument &reply);
 };
 
 
