@@ -27,7 +27,6 @@ public:
     void setModel(TestWindowModel* model);
 signals:
 
-
     // ConfigurableWidget interface
 
 
@@ -36,6 +35,8 @@ private slots:
     void onDataUpdated(DataUpdatedIvent ivent);
     void onNextButtonClicked();
     void onPreviousButtonClicked();
+    void onRadioButtonClicked(int id);
+
 
 private:
     void configureLayaut() override;
