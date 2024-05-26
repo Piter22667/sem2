@@ -1,5 +1,7 @@
 #include "testwindow.h"
 
+#include <QMessageBox>
+
 TestWindow::TestWindow( QWidget *parent)
     : QDialog{parent}
 
@@ -32,6 +34,12 @@ void TestWindow::onDataUpdated(DataUpdatedIvent ivent)
         break;
     case DataUpdatedIvent::testListReceived:
         break;
+    case DataUpdatedIvent::testChecked:
+        QMessageBox messageBox;
+        messageBox.setWindowTitle("Результат тесту:                    ");
+        messageBox.setText(model->getCheckedResult());
+        messageBox.exec();
+        break;
 
     }
 }
@@ -41,6 +49,11 @@ void TestWindow::onDataUpdated(DataUpdatedIvent ivent)
 void TestWindow::onPreviousButtonClicked()
 {
     model->previousButtonClicked();
+}
+
+void TestWindow::onRadioButtonClicked(int id)
+{
+    model->onRadioButtonClicked(id);
 }
 
 void TestWindow::onNextButtonClicked()
@@ -82,6 +95,7 @@ void TestWindow::connectWidgets()
 {
     connect(buttonsWidget, &TwoButtonsWidget::firstButtonClicked, this, &TestWindow::onPreviousButtonClicked);
     connect(buttonsWidget, &TwoButtonsWidget::secondButtonClicked, this, &TestWindow::onNextButtonClicked);
+    connect(topWidget, &TopTestWidget::radioButtonClicked, this, &TestWindow::onRadioButtonClicked);
 }
 
 void TestWindow::updateUi()
