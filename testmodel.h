@@ -30,7 +30,7 @@ struct TestModel
 {
     QString name;
     QString id;
-    QString minTestScore;
+    int minTestScore;
 
     QString description;
     QVector<Question> questions;
@@ -38,7 +38,7 @@ struct TestModel
     void fromJsonObject(const QJsonObject &jsonObj){
         name = jsonObj["name"].toString();
         id = jsonObj["id"].toString();
-        minTestScore = jsonObj["minTestScore"].toString();
+        minTestScore = jsonObj["min_test_score"].toInt();
         description = jsonObj["description"].toString();
 
         QJsonArray questionsArray = jsonObj["questions"].toArray();
