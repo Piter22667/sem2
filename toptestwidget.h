@@ -15,6 +15,7 @@ public:
 
 
 signals:
+    void radioButtonClicked(int id);
 
 private:
    QVector<QLabel*> labels;
@@ -27,6 +28,13 @@ private:
     void addWidgets() override;
     void configureWidgets() override;
     void connectWidgets() override;
+
+    QButtonGroup *group;
+
+private slots:
+    void onRadioButtonClicked(int id);
+
+
 
 
 
