@@ -1,75 +1,53 @@
 #include "testwindowmodel.h"
 #include <QDebug>
 
+#include "networkmanager.h"
 
 TestWindowModel::TestWindowModel(TestModel* test, QObject *parent)
     : WindowModelInterface{parent},
     currentQuestion{0}
 {
     this->test = test;
-    chosenAnswers.resize(test->questions.size());
+    if (test != nullptr) {
+        chosenAnswers.resize(test->questions.size());
+        for(auto &answer:chosenAnswers){
+            answer = 0;
+        }
+    }
 }
 
 QString TestWindowModel::getQuestion()
 {
-    if(test != nullptr){
-        if(currentQuestion < test->questions.size()){
-            return test->questions.at(currentQuestion).questionText;
-        }
+    if(test != nullptr && currentQuestion < test->questions.size()){
+        return test->questions.at(currentQuestion).questionText;
     }
     return "";
 }
 
 QStringList TestWindowModel::getAnswers()
 {
-    // QStringList answersList;
-    // for(int i=0; i<4; i++ ){
-    //     answersList.push_back(QString( "Answer: %1").arg(i));
-    // }
-    return test->questions.at(currentQuestion).answers;
+    if (test != nullptr && currentQuestion < test->questions.size()) {
+        return test->questions.at(currentQuestion).answers;
+    }
+    return QStringList();
 }
-
-// void TestWindowModel::updateDataSource()
-// {
-//     test = new TestModel;
-//     test->name = "First test";
-//     Question question;
-//     question.questionText = "New question 1:";
-//     question.answers.push_back("Answer 1");
-//     question.answers.push_back("Answer 2");
-//     question.answers.push_back("Answer 3");
-//     question.correctAnswer = 2;
-//     test->questions.push_back(question);
-
-//     Question question2;
-//     question2.questionText = "New question 2:";
-//     question2.answers.push_back("new Answer 1");
-//     question2.answers.push_back("new Answer 2");
-//     question2.answers.push_back("new Answer 3");
-//     question2.correctAnswer = 2;
-//     test->questions.push_back(question2);
-
-//     \
-//     for(int i = 0; i< test->questions.size(); i++){
-//      chosenAnswers.push_back(-1);
-//     }
-// }
 
 void TestWindowModel::nextButtonClicked(int id)
 {
+    if (test == nullptr || test->questions.isEmpty()) {
+        return;
+    }
+
     auto event = DataUpdatedIvent();
-    chosenAnswers[currentQuestion] = id;
     if(currentQuestion < test->questions.size() - 1){
         currentQuestion++;
         event.type = DataUpdatedIvent::nextQuestion;
-
-    }
-    else{
+    } else {
         processingAnswers();
         event.type = DataUpdatedIvent::testChecked;
     }
     emit dataUpdatedWith(event);
-    // qDebug() << "Next";
+    qDebug() << "Next";
 }
 
 void TestWindowModel::previousButtonClicked()
@@ -80,22 +58,41 @@ void TestWindowModel::previousButtonClicked()
         event.type = DataUpdatedIvent::nextQuestion;
         emit dataUpdatedWith(event);
     }
-
 }
 
 void TestWindowModel::processingAnswers()
 {
-    // checkedMark = 20;
-    for(int i =0; i <= chosenAnswers.size(); i++){
-        if(chosenAnswers[i] == test->questions[i].correctAnswer){
-            checkedMark++;
+    if (test == nullptr) {
+        return;
+    }
+
+    int testNumber = testResult.results.size();
+    testResult.results.append(TestResultModel::Result());
+    testResult.results[testNumber].result = 0;
+    testResult.results[testNumber].name = test->name;
+    for(int i = 0; i < chosenAnswers.size(); i++){
+        if(i < test->questions.size() && chosenAnswers[i] == test->questions[i].correctAnswer){
+            testResult.results[testNumber].result++;
+            qDebug() << chosenAnswers[i] << " " << test->questions[i].correctAnswer;
         }
+    }
+    if(!trainTest){
+        sendTestResult();
     }
 }
 
 int TestWindowModel::getCurrentAnswerNumber()
 {
-    return chosenAnswers.at(currentQuestion);
+    if (currentQuestion < chosenAnswers.size()) {
+        return chosenAnswers.at(currentQuestion);
+    }
+    return -1;
+}
+
+void TestWindowModel::setName(QString name)
+{
+    testResult.name = name;
+
 }
 
 QString TestWindowModel::getFirstButtonTitle()
@@ -105,7 +102,7 @@ QString TestWindowModel::getFirstButtonTitle()
 
 QString TestWindowModel::getSecondButtonTitle()
 {
-    if(currentQuestion == test->questions.size() - 1){
+    if(test != nullptr && currentQuestion == test->questions.size() - 1){
         return "Send";
     }
     return "Next";
@@ -113,15 +110,46 @@ QString TestWindowModel::getSecondButtonTitle()
 
 void TestWindowModel::onRadioButtonClicked(int id)
 {
-    chosenAnswers[currentQuestion] = id;
-
+    if (currentQuestion < chosenAnswers.size()) {
+        chosenAnswers[currentQuestion] = id;
+        qDebug() << "Clicked: " << id;
+    }
 }
 
 QString TestWindowModel::getCheckedResult() const
 {
-    if(checkedMark < test->minTestScore){
-        return "Тест не пройдено. Ваш бал: " + QString::number(checkedMark) ;
+    if (test == nullptr) {
+        return "";
     }
 
-    return "Тест пройдено. Ваш бал: " + QString::number(checkedMark) ;
+    int testNumber = testResult.results.size() - 1;
+    if (testNumber >= 0 && testNumber < testResult.results.size()) {
+        if (testResult.results[testNumber].result < test->minTestScore) {
+            return "Тест не пройдено. Ваш бал: " + QString::number(testResult.results[testNumber].result);
+        }
+        return "Тест пройдено. Ваш бал: " + QString::number(testResult.results[testNumber].result);
+    }
+
+    return "";
+}
+
+void TestWindowModel::setTrainTest(bool newTrainTest)
+{
+    trainTest = newTrainTest;
+}
+
+bool TestWindowModel::getTrainTest() const
+{
+    return trainTest;
+}
+
+void TestWindowModel::sendTestResult()
+{
+    if (testResult.results.isEmpty()) {
+        return;
+    }
+
+    // QJsonObject data;
+    // data["data"] = testResult.toJson();
+    NetworkManager::instance()->postRequest("/test_results/" + testResult.name + "/results.json", testResult.toJson());
 }
