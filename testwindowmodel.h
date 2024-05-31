@@ -5,6 +5,7 @@
 #include "windowmodelinterface.h"
 #include "twobuttonsmodelinterface.h"
 #include "testmodel.h"
+#include "testresultmodel.h"
 
 #include <QButtonGroup>
 
@@ -23,6 +24,7 @@ public:
     void previousButtonClicked();
     void processingAnswers();
     int getCurrentAnswerNumber();
+    void setName(QString name);
 
 
     QString getFirstButtonTitle() override;
@@ -33,6 +35,10 @@ public:
 
     QString getCheckedResult() const;
 
+    void setTrainTest(bool newTrainTest);
+
+    bool getTrainTest() const;
+
 signals:
 
 private slots:
@@ -41,8 +47,10 @@ private:
     TestModel* test = nullptr;
     int currentQuestion;
     QVector<int> chosenAnswers;
-    int checkedMark = 0;
+    TestResultModel testResult;
+    bool trainTest = true;
 
+    void sendTestResult();
 };
 
 #endif // TESTWINDOWMODEL_H
