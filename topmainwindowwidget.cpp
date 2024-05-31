@@ -23,8 +23,6 @@ void TopMainWindowWidget::addWidgets() {
 void TopMainWindowWidget::configureWidgets() {
     tableView->setModel(model.getTestsTableModel());
 
-
-
 }
 
 void TopMainWindowWidget::connectWidgets() {
