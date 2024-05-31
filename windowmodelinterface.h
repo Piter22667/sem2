@@ -9,7 +9,8 @@ struct DataUpdatedIvent
         testReceived,
         testSended,
         testListReceived,
-        nextQuestion
+        nextQuestion,
+        testChecked
 
     };
     EventType type;
