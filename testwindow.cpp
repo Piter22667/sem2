@@ -1,12 +1,14 @@
 #include "testwindow.h"
 
 #include <QMessageBox>
-
+#include <QTimer>
 TestWindow::TestWindow( QWidget *parent)
     : QDialog{parent}
 
 {
     // model->updateDataSource();
+    QTimer::singleShot(0, this, &TestWindow::createInputDialogWindow);
+
 }
 
 void TestWindow::setModel(TestWindowModel *model)
@@ -16,6 +18,8 @@ void TestWindow::setModel(TestWindowModel *model)
     configure();
     connect(model,&TestWindowModel::dataUpdatedWith, this, onDataUpdated);
     topWidget->updateUi();
+
+
 
 }
 
@@ -54,6 +58,23 @@ void TestWindow::onPreviousButtonClicked()
 void TestWindow::onRadioButtonClicked(int id)
 {
     model->onRadioButtonClicked(id);
+}
+
+void TestWindow::createInputDialogWindow()
+{
+    if(!this->model->getTrainTest()){
+        inputNameDialog = new InputNameDialog(this);
+        connect(inputNameDialog, &InputNameDialog::nameEntered, this, [&](QString name){
+            this->model->setName(name);
+        });
+        connect(inputNameDialog, &InputNameDialog::rejected, this, [&](){
+            qDebug() << "Closed";
+            this->close();
+        });
+
+        inputNameDialog->exec();
+
+    }
 }
 
 void TestWindow::onNextButtonClicked()
