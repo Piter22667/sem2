@@ -15,7 +15,7 @@ class NetworkManager : public QObject
     Q_OBJECT
 
     QNetworkAccessManager *networkManager;
-    const QString baseUrlString = "https://test1-cad1d-default-rtdb.firebaseio.com/tests.json";
+    const QString baseUrlString = "https://test1-cad1d-default-rtdb.firebaseio.com";
 
     explicit NetworkManager(QObject *parent = nullptr) : QObject(parent){
         networkManager = new QNetworkAccessManager(this);
@@ -33,15 +33,20 @@ public:
 
 
     void getRequest(QString urlString){
-        QNetworkRequest request = QNetworkRequest(QUrl(baseUrlString ));
+        QNetworkRequest request = QNetworkRequest(QUrl(baseUrlString + urlString));
         connect(networkManager, &QNetworkAccessManager::finished, this, &NetworkManager::requestFinished);
         networkManager->get(request);
     }
-    void postRequest(QString urlString){
 
-
+    void postRequest(QString urlString, QJsonObject data){
+        QUrl url(baseUrlString + urlString);
+        QNetworkRequest request(url);
+        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        QJsonDocument jsonDoc(data);
+        QByteArray jsonData = jsonDoc.toJson();
+        networkManager->post(request, jsonData);
     }
-
+//user name, test name, test result
 
 
 signals:
