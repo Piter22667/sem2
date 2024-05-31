@@ -66,7 +66,7 @@ void MainWindowModel::setSelectedTestNumber(int newSelectedTestNumber)
 
 void MainWindowModel::getDataSource()
 {
-    NetworkManager::instance()->getRequest("tests");
+    NetworkManager::instance()->getRequest("/tests.json");
 
     // TestModel* test = new TestModel;
     // test->minTestScore = "60";
