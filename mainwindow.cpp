@@ -25,6 +25,11 @@ void MainWindow::onTrainButtonClicked()
 void MainWindow::onPassButtonClicked()
 {
     qDebug()<< "Pass";
+    auto window = dynamic_cast <TestWindow*> (WindowsFactory::createWindow(WindowsFactory::WindowType::TrainTest));
+    auto *testWindowModel = new TestWindowModel(model->getTest());
+    testWindowModel->setTrainTest(false);
+    window->setModel(testWindowModel);
+    window->exec();
 
 }
 
